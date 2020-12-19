@@ -276,6 +276,16 @@ impl LockupContract {
         }
     }
 
+    /*
+    Note: what does #[callback] do?
+    #[callback] parses the previous promise's result into the param
+    Check out https://nomicon.io/RuntimeSpec/Components/BindingsSpec/PromisesAPI.html
+    1. check promise_results_count() == 1
+    2  check the execution status of the first promise and write the result into the register using promise_result(0, register_id) == 1
+        Let's say that you used register_id == 0
+    3. read register using register_len and read_register into Wasm memory
+    4. parse the data using: let total_balance: WrappedBalance = serde_json::from_slice(&buf).unwrap();
+    */
     /// Called after the request to get the current total balance from the staking pool.
     pub fn on_get_account_total_balance(&mut self, #[callback] total_balance: WrappedBalance) {
         assert_self();
